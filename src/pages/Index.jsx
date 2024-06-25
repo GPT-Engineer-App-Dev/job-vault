@@ -1,7 +1,15 @@
-import { Container, VStack, Heading, Text, Box, Button, HStack, IconButton } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Button, HStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaBriefcase, FaSearch } from "react-icons/fa";
 
 const Index = () => {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const storedJobs = JSON.parse(localStorage.getItem("jobs")) || [];
+    setJobs(storedJobs);
+  }, []);
   return (
     <Container centerContent maxW="container.lg" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <VStack spacing={8} width="100%">
@@ -10,30 +18,23 @@ const Index = () => {
         
         <HStack spacing={4} width="100%" justifyContent="center">
           <Button leftIcon={<FaSearch />} colorScheme="teal" size="lg">Search Jobs</Button>
-          <Button leftIcon={<FaBriefcase />} colorScheme="teal" size="lg">Post a Job</Button>
+          <Link to="/post-job">
+            <Button leftIcon={<FaBriefcase />} colorScheme="teal" size="lg">Post a Job</Button>
+          </Link>
         </HStack>
         
         <Box width="100%" padding={4} borderWidth={1} borderRadius="lg" boxShadow="md">
           <Heading as="h2" size="lg" marginBottom={4}>Featured Jobs</Heading>
           <VStack spacing={4} align="start">
-            <Box padding={4} borderWidth={1} borderRadius="lg" width="100%">
-              <Heading as="h3" size="md">Software Engineer</Heading>
-              <Text>Company: Tech Innovators</Text>
-              <Text>Location: Remote</Text>
-              <Button colorScheme="teal" size="sm" marginTop={2}>Apply Now</Button>
-            </Box>
-            <Box padding={4} borderWidth={1} borderRadius="lg" width="100%">
-              <Heading as="h3" size="md">Product Manager</Heading>
-              <Text>Company: Creative Solutions</Text>
-              <Text>Location: New York, NY</Text>
-              <Button colorScheme="teal" size="sm" marginTop={2}>Apply Now</Button>
-            </Box>
-            <Box padding={4} borderWidth={1} borderRadius="lg" width="100%">
-              <Heading as="h3" size="md">UX Designer</Heading>
-              <Text>Company: Design Hub</Text>
-              <Text>Location: San Francisco, CA</Text>
-              <Button colorScheme="teal" size="sm" marginTop={2}>Apply Now</Button>
-            </Box>
+            {jobs.map((job, index) => (
+              <Box key={index} padding={4} borderWidth={1} borderRadius="lg" width="100%">
+                <Heading as="h3" size="md">{job.title}</Heading>
+                <Text>Company: {job.company}</Text>
+                <Text>Location: {job.location}</Text>
+                <Text>{job.description}</Text>
+                <Button colorScheme="teal" size="sm" marginTop={2}>Apply Now</Button>
+              </Box>
+            ))}
           </VStack>
         </Box>
       </VStack>
